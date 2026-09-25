@@ -21,6 +21,12 @@ cp "$root/.retrom-build/site/dist/retrom.bundle.js" "$work/site/dist/"
 cp "$root/.retrom-build/site/dist/audio_worker.bundle.js" "$work/site/dist/"
 cat > "$work/site/index.html" <<'HTML'
 <!doctype html><html lang="en"><meta charset="utf-8"><title>Apple IIe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#000}
+body{display:grid;place-items:center}
+canvas{display:block;width:min(100vw,145.833333vh);height:auto;image-rendering:pixelated}
+</style>
 <canvas id="screen" width="560" height="384"></canvas>
 <script src="dist/retrom.bundle.js"></script></html>
 HTML
