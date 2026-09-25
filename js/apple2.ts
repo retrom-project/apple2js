@@ -8,6 +8,7 @@ import {
 import { HiresPage2D, LoresPage2D, VideoModes2D } from './canvas';
 import { HiresPageGL, LoresPageGL, VideoModesGL } from './gl';
 import ROM from './roms/rom';
+import { externalFirmware } from './external_firmware';
 import { Apple2IOState } from './apple2io';
 import {
     CPU6502,
@@ -27,10 +28,12 @@ import { processGamepad } from './ui/gamepad';
 
 export interface Apple2Options {
     characterRom: string;
+    characterRomBytes?: Uint8Array;
     enhanced: boolean;
     e: boolean;
     gl: boolean;
     rom: string;
+    romBytes?: Uint8Array;
     canvas: HTMLCanvasElement;
     tick: () => void;
 }
@@ -85,15 +88,6 @@ export class Apple2 implements Restorable<State>, DebuggerContainer {
     }
 
     async init(options: Apple2Options) {
-        const romImportPromise = import(
-            `./roms/system/${options.rom}`
-        ) as Promise<{
-            default: new () => ROM;
-        }>;
-        const characterRomImportPromise = import(
-            `./roms/character/${options.characterRom}`
-        ) as Promise<{ default: ReadonlyUint8Array }>;
-
         const LoresPage = options.gl ? LoresPageGL : LoresPage2D;
         const HiresPage = options.gl ? HiresPageGL : HiresPage2D;
         const VideoModes = options.gl ? VideoModesGL : VideoModes2D;
@@ -103,15 +97,34 @@ export class Apple2 implements Restorable<State>, DebuggerContainer {
         });
         this.vm = new VideoModes(options.canvas, options.e);
 
-        const [{ default: Apple2ROM }, { default: characterRom }] =
-            await Promise.all([
-                romImportPromise,
-                characterRomImportPromise,
-                this.vm.ready,
-            ]);
+        if (options.romBytes || options.characterRomBytes) {
+            if (!options.romBytes || !options.characterRomBytes) {
+                throw new Error('Both Apple IIe firmware inputs are required');
+            }
+            const firmware = externalFirmware(options.romBytes, options.characterRomBytes);
+            this.rom = firmware.system;
+            this.characterRom = firmware.character;
+            await this.vm.ready;
+        } else {
+            const romImportPromise = import(
+                `./roms/system/${options.rom}`
+            ) as Promise<{
+                default: new () => ROM;
+            }>;
+            const characterRomImportPromise = import(
+                `./roms/character/${options.characterRom}`
+            ) as Promise<{ default: ReadonlyUint8Array }>;
 
-        this.rom = new Apple2ROM();
-        this.characterRom = characterRom;
+            const [{ default: Apple2ROM }, { default: characterRom }] =
+                await Promise.all([
+                    romImportPromise,
+                    characterRomImportPromise,
+                    this.vm.ready,
+                ]);
+
+            this.rom = new Apple2ROM();
+            this.characterRom = characterRom;
+        }
 
         this.ram = [new RAM(0x00, 0xbf)];
         if (options.e) {

@@ -261,6 +261,11 @@ export default class KeyBoard {
         window.addEventListener('keyup', this.keyup);
     }
 
+    dispose() {
+        window.removeEventListener('keydown', this.keydown);
+        window.removeEventListener('keyup', this.keyup);
+    }
+
     setFunction(key: string, fn: KeyFunction) {
         this.functions[key] = fn;
     }

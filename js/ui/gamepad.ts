@@ -37,8 +37,12 @@ export function processGamepad(io: Apple2IO) {
     if (!gamepad) {
         return;
     }
-    const x = (gamepad.axes[0] * 1.414 + 1) / 2.0;
-    const y = (gamepad.axes[1] * 1.414 + 1) / 2.0;
+    const axisX = gamepad.axes[0] ?? 0;
+    const axisY = gamepad.axes[1] ?? 0;
+    const dpadX = Number(gamepad.buttons[15]?.pressed ?? false) - Number(gamepad.buttons[14]?.pressed ?? false);
+    const dpadY = Number(gamepad.buttons[13]?.pressed ?? false) - Number(gamepad.buttons[12]?.pressed ?? false);
+    const x = ((Math.abs(axisX) > 0.25 ? axisX : dpadX) * 1.414 + 1) / 2.0;
+    const y = ((Math.abs(axisY) > 0.25 ? axisY : dpadY) * 1.414 + 1) / 2.0;
     io.paddle(0, flipX ? 1.0 - x : x);
     io.paddle(1, flipY ? 1.0 - y : y);
     for (let idx = 0; idx < gamepad.buttons.length; idx++) {

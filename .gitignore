@@ -4,6 +4,7 @@
 .vscode
 /coverage
 /dist
+/.retrom-build
 /node_modules
 /tmp
 __diff_output__

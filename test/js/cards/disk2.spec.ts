@@ -58,6 +58,15 @@ describe('DiskII', () => {
         expect(diskII).not.toBeNull();
     });
 
+    it('uses and copies a host supplied bootstrap ROM', () => {
+        const firmware = new Uint8Array(256);
+        firmware[0] = 0x42;
+        const diskII = new DiskII(mockApple2IO, callbacks, 16, firmware);
+        firmware[0] = 0;
+        expect(diskII.read(0xc6, 0)).toBe(0x42);
+        expect(() => new DiskII(mockApple2IO, callbacks, 16, new Uint8Array(1))).toThrow();
+    });
+
     it('round-trips the state when there are no changes', async () => {
         const diskII = new DiskII(mockApple2IO, callbacks);
         await diskII.setBinary(1, 'BYTES_BY_TRACK', 'po', BYTES_BY_TRACK_AB);

@@ -308,13 +308,20 @@ export default class DiskII implements Card<State>, MassStorage<NibbleFormat> {
     private curDriver: DiskDriver;
 
     private worker: Worker;
+    private readonly bootstrapRom: ReadonlyUint8Array;
 
     /** Builds a new Disk ][ card. */
     constructor(
         private io: Apple2IO,
         private callbacks: Callbacks,
-        private sectors: SupportedSectors = 16
+        private sectors: SupportedSectors = 16,
+        bootstrapRom: ReadonlyUint8Array = BOOTSTRAP_ROM[sectors],
+        useWorker = true
     ) {
+        if (bootstrapRom.byteLength !== 256) {
+            throw new Error('Disk II bootstrap ROM must contain 256 bytes');
+        }
+        this.bootstrapRom = new Uint8Array(bootstrapRom);
         this.debug('Disk ][');
 
         this.state = {
@@ -336,7 +343,9 @@ export default class DiskII implements Card<State>, MassStorage<NibbleFormat> {
 
         this.updateActiveDrive();
 
-        this.initWorker();
+        if (useWorker) {
+            this.initWorker();
+        }
     }
 
     /** Updates the active drive based on the controller state. */
@@ -519,7 +528,7 @@ export default class DiskII implements Card<State>, MassStorage<NibbleFormat> {
     }
 
     read(_page: byte, off: byte) {
-        return BOOTSTRAP_ROM[this.sectors][off];
+        return this.bootstrapRom[off];
     }
 
     write() {

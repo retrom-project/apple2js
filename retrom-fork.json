@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "forkRepository": "https://github.com/retrom-project/apple2js",
+  "defaultBranch": "retrom/gee0aed25f73c",
+  "upstreamMirrorBranch": "main",
+  "upstreams": [
+    {
+      "role": "core",
+      "repository": "https://github.com/whscullin/apple2js",
+      "refType": "COMMIT",
+      "ref": "ee0aed25f73c69d0245e86a2a5fccb3324c3056c",
+      "commit": "ee0aed25f73c69d0245e86a2a5fccb3324c3056c"
+    }
+  ],
+  "adapterAbi": "apple2js-web-v1",
+  "releaseAssets": ["apple2js-site.tar.gz", "LICENSE", "source.tar.gz", "rpg-runtime-release.json"]
+}

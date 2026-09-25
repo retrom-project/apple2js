@@ -131,6 +131,15 @@ export class Audio implements OptionHandler {
         }
     };
 
+    dispose = async () => {
+        window.removeEventListener('keydown', this.autoStart);
+        window.removeEventListener('touchstart', this.autoStart);
+        window.removeEventListener('mousedown', this.autoStart);
+        this.audioNode?.disconnect();
+        this.workletNode?.disconnect();
+        await this.audioContext.close();
+    };
+
     isEnabled = () => {
         return this.sound;
     };

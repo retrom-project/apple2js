@@ -45,7 +45,12 @@ export default class RAM implements Memory, Restorable<RAMState> {
     }
 
     public setState(state: RAMState) {
-        this.mem = new Uint8Array(state.mem);
+        if (state.mem.length !== this.mem.length) {
+            throw new Error('RAM snapshot size mismatch');
+        }
+        // Video pages hold subarray views into this buffer. Replacing it would
+        // leave the display reading stale bytes after a snapshot restore.
+        this.mem.set(state.mem);
     }
 
     public getBuffer(start: byte, end: byte): memory {
