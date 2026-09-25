@@ -10,21 +10,23 @@ export const BUTTON = {
     // Triggers
     L1: 4,
     R1: 5,
+    L2: 6,
+    R2: 7,
 
     // Analog stick buttons
-    L3: 6,
-    R3: 7,
+    L3: 10,
+    R3: 11,
 
     // Special
-    START: 8,
-    SELECT: 9,
-    LOGO: 10,
+    START: 9,
+    SELECT: 8,
+    LOGO: 16,
 
     // D pad
-    UP: 11,
-    DOWN: 12,
-    LEFT: 13,
-    RIGHT: 14,
+    UP: 12,
+    DOWN: 13,
+    LEFT: 14,
+    RIGHT: 15,
 } as const;
 
 export type ButtonType = KnownKeys<typeof BUTTON>;

@@ -39,13 +39,13 @@ it('maps Start to the Apple II one-player key and Select to Escape', () => {
         keyUp: jest.fn(),
     };
     initGamepad();
-    buttons[8].pressed = true;
+    buttons[9].pressed = true;
     processGamepad(io as unknown as Apple2IO);
     expect(io.keyDown).toHaveBeenCalledWith('1'.charCodeAt(0));
-    buttons[8].pressed = false;
+    buttons[9].pressed = false;
     processGamepad(io as unknown as Apple2IO);
     expect(io.keyUp).toHaveBeenCalled();
-    buttons[9].pressed = true;
+    buttons[8].pressed = true;
     processGamepad(io as unknown as Apple2IO);
     expect(io.keyDown).toHaveBeenLastCalledWith(0x1b);
 });

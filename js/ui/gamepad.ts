@@ -13,7 +13,7 @@ const DEFAULT_GAMEPAD: GamepadConfiguration = {
 } as const;
 
 /**
- * An array with 16 entries. For each entry _e_:
+ * An array with 17 entries. For each entry _e_:
  *
  * *   if _e_ <= 0, then _-e_ is 0 | 1 | 2 and represents a joystick button;
  * *   if _e_ > 0, then _e_ is a key on the keyboard that is pressed;
@@ -21,7 +21,7 @@ const DEFAULT_GAMEPAD: GamepadConfiguration = {
  */
 const gamepadMap: Array<number | undefined> = [];
 /**
- * An array with 16 entries saying whether or not the given button is
+ * An array with 17 entries saying whether or not the given button is
  * currently pressed.
  */
 const gamepadState: boolean[] = [];
@@ -87,7 +87,7 @@ export function configGamepad(configFlipX: boolean, configFlipY: boolean) {
 
 export function initGamepad(data?: GamepadConfiguration) {
     // Clear map
-    for (let idx = 0; idx < 16; idx++) {
+    for (let idx = 0; idx < 17; idx++) {
         gamepadMap[idx] = undefined;
     }
     const map = data || DEFAULT_GAMEPAD;
